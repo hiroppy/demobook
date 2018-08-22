@@ -1,0 +1,52 @@
+'use strict';
+
+const { createServer } = require('http');
+const express = require('express');
+const bodyParser = require('body-parser');
+const { config } = require('dotenv');
+const router = require('./router');
+
+config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+router(app);
+
+const server = createServer(app).listen(port);
+
+server.on('listening', () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+
+  console.log(`Listening on ${bind}`);
+});
+
+server.on('error', (err) => {
+  if (err.syscall !== 'listen') throw err;
+
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+
+  switch (err.code) {
+    case 'EACCES':
+      console.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(`${bind} is already in use`);
+      process.exit(1);
+    default:
+      throw err;
+  }
+});
+
+process.on('uncaughtException', (err) => {
+  console.error(err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+});

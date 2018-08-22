@@ -1,0 +1,20 @@
+{
+  "name": "@demobook/cli",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "demobook": "./bin/demobook.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hiroppy <git@hiroppy.me> (https://hiroppy.me)",
+  "license": "MIT",
+  "dependencies": {
+    "form-data": "^2.3.2",
+    "glob": "^7.1.2",
+    "meow": "^5.0.0",
+    "node-fetch": "^2.2.0",
+    "ora": "^3.0.0"
+  }
+}
