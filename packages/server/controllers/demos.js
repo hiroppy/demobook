@@ -4,23 +4,40 @@ const { createDir, moveFiles } = require('../deploy');
 const { postCommentToPR } = require('../bot');
 
 async function post(req, res) {
-  const { owner, repo } = req.params;
-  const dir = await createDir(req.params);
+  try {
+    const { owner, repo } = req.params;
+    const dir = await createDir(req.params);
 
-  const files = req.body['file_path'].map((name, i) => {
-    const info = req.files[i];
+    if (!Array.isArray(req.body['file_path'])) throw e;
 
-    return {
-      name: name,
-      buffer: info.buffer
-    };
-  });
+    const prNum =
+      req.body['pr_num'] && Array.isArray(req.body['pr_num'])
+        ? Number(req.body['pr_num'][0])
+        : null;
+    const files = req.body['file_path'].map((name, i) => {
+      const info = req.files[i];
 
-  await moveFiles(files, dir);
+      return {
+        name: name,
+        buffer: info.buffer
+      };
+    });
 
-  return res.json({
-    url: `${process.env.URL}/${dir}`.replace('dist', 'demos')
-  });
+    await moveFiles(files, dir);
+
+    const url = `${process.env.URL}/${dir}`.replace('dist', 'demos');
+
+    if (prNum) {
+      const body = `Deployed to ${url}`;
+
+      await postCommentToPR({ owner, repo, number: prNum, body });
+    }
+
+    return res.json({ url });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: e.message });
+  }
 }
 
 module.exports = {

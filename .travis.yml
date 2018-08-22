@@ -8,5 +8,6 @@ node_js:
 os:
   - linux
 before_script:
-  - npm ci
-  - node packages/cli/bin/demobook
+  - npm i
+  - cd examples
+  - node ../packages/cli/bin/demobook -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output

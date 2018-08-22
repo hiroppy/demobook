@@ -15,10 +15,12 @@ const cli = meow(
 	   $ demobook -t http://localhost:3000 -d build
 
   Options
-    --repo,      -r  the repository name
-    --owner,     -o  the owner name(or the organization name)
-	   --target,    -t  Specify the destination URL
-	   --directory, -d  published directory(default: dist)
+     --repo,      -r  the repository name
+     --owner,     -o  the owner name(or the organization name)
+     --target,    -t  Specify the destination URL
+     --directory, -d  published directory(default: dist)
+     --pr             Specify an issue number if you post a URL
+                      as a comment on github's PR
 `,
   {
     flags: {
@@ -38,6 +40,9 @@ const cli = meow(
         type: 'string',
         alias: 'd',
         default: 'dist'
+      },
+      pr: {
+        type: 'number'
       }
     }
   }

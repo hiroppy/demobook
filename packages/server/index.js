@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { config } = require('dotenv');
 const router = require('./router');
+const { setup: setupBot } = require('./bot');
 
 config();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 router(app);
+setupBot();
 
 const server = createServer(app).listen(port);
 

@@ -16,7 +16,7 @@ function globAsync(p) {
   });
 }
 
-async function postDirectory({ target, directory = 'dist', owner, repo }) {
+async function postDirectory({ target, directory = 'dist', owner, repo, pr }) {
   if (target === undefined || owner === undefined || repo === undefined) throw new Error();
 
   const url = `${target}/api`;
@@ -31,6 +31,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo }) {
     for (const item of items) {
       if (statSync(item).isDirectory()) continue;
 
+      if (pr) form.append('pr_num', pr);
       form.append('file_path', relative(join(process.cwd(), directory), item));
       form.append('file', createReadStream(item));
     }
