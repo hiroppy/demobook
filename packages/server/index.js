@@ -1,6 +1,6 @@
 'use strict';
 
-const { createServer } = require('http');
+const { readFileSync } = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { config } = require('dotenv');
@@ -18,7 +18,18 @@ app.use(bodyParser.json());
 router(app);
 setupBot();
 
-const server = createServer(app).listen(port);
+const server =
+  process.env.SSL_KEY && process.env.SSL_CERT
+    ? require('https').createServer(
+        {
+          key: readFileSync(process.env.SSL_KEY),
+          cert: readFileSync(process.env.SSL_CERT)
+        },
+        app
+      )
+    : require('http').createServer(app);
+
+server.listen(port);
 
 server.on('listening', () => {
   const addr = server.address();
