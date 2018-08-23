@@ -75,11 +75,11 @@ async function post(req, res) {
 
       const body = generateOutput(item, existedComment ? existedComment.body : null);
 
-      // if (existedComment) {
-      //   await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
-      // } else {
-      //   await postCommentToPR({ owner, repo, number: prNum, body });
-      // }
+      if (existedComment) {
+        await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
+      } else {
+        await postCommentToPR({ owner, repo, number: prNum, body });
+      }
     }
 
     return res.json({ url });

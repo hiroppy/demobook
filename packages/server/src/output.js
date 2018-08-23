@@ -75,6 +75,14 @@ function hasItemInTable(item, table) {
   return arr.some((c) => c.includes(`[${item.projectName}]`));
 }
 
+function getInfo() {
+  return `## Info 🤓
+
+Hosting Server: ${process.env.URL}
+
+<sub><sup>Supported by <a href="https://github.com/hiroppy/demobook">demobook</a>.</sup></sub>`;
+}
+
 function generateOutput(item, beforeBody) {
   if (!beforeBody) {
     // create body
@@ -85,7 +93,7 @@ function generateOutput(item, beforeBody) {
   }
 
   // parse before body
-  const [current, log] = beforeBody.split(separator); // center separator
+  const [current, log, info] = beforeBody.split(separator); // center separator
 
   // only Current exists
   if (!log) {
@@ -101,7 +109,11 @@ function generateOutput(item, beforeBody) {
 
 ${separator}
 
-${createSection('Log 📝', oldRow)}`;
+${createSection('Log 📝', oldRow)}
+
+${separator}
+
+${getInfo()}`;
     }
   }
 
@@ -112,7 +124,11 @@ ${createSection('Log 📝', oldRow)}`;
 
 ${separator}
 
-${logTable}`;
+${logTable}
+
+${separator}
+
+${getInfo()}`;
 }
 
 module.exports = generateOutput;
