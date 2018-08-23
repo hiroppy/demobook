@@ -11,7 +11,7 @@ async function post(req, res) {
     let prNum, files;
 
     if (typeof req.body['file_path'] === 'string') {
-      prNum = req.body['pr_num'] ? req.body['pr_num'] : null;
+      prNum = req.body['pr_num'] ? Number(req.body['pr_num']) : null;
       files = [
         {
           name: req.body['file_path'],
