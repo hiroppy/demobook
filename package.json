@@ -1,6 +1,6 @@
 {
   "name": "demobook",
-  "private": true,
+  "private": false,
   "publishConfig": {
     "access": "public"
   },
