@@ -1,6 +1,6 @@
 # DemoBook
 
-[![Travis (.org)](https://img.shields.io/travis/hiroppy/demobbok.svg?style=flat-square)](https://travis-ci.org/hiroppy/demobook)
+[![Travis (.org)](https://img.shields.io/travis/hiroppy/demobook.svg?style=flat-square)](https://travis-ci.org/hiroppy/demobook)
 
 DemoBook will automatically deploy static files to your hosted server and generate appropriate URLs.  
 For example, it is possible to support a review of PR by making CI execute CLI.  
@@ -14,7 +14,9 @@ Also, the bot can also post the URL as a comment from a server.
 
 ## Sample
 
-Currently, this repository is running demobook-cli when running CI of Travis.
+![](media/comment.png)
+
+Currently, this repository is running demobook-cli when running CI of Travis.  
 see: https://travis-ci.org/hiroppy/demobook
 
 ```yml
@@ -30,7 +32,10 @@ os:
   - linux
 before_script:
   - npm i
-  - npx @demobook/cli -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output --pr ${TRAVIS_PULL_REQUEST}
+  - npm run cat
+  - npx @demobook/cli -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output --pr ${TRAVIS_PULL_REQUEST} -n cat
+  - npm run dog
+  - npx @demobook/cli -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d build --pr ${TRAVIS_PULL_REQUEST} -n dog
 ```
 
 After that, it is uploading a static file to Heroku.
