@@ -1,11 +1,19 @@
 'use strict';
 
+const { parse } = require('url');
 const { promisify } = require('util');
 const { createClient } = require('redis');
 
+const { hostname, port } = process.env.REDIS_URL
+  ? parse(process.env.REDIS_URL)
+  : {
+      hostname: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT
+    };
+
 const option = {
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT,
+  host: hostname,
+  port,
   db: 0
 };
 const expiredSubKey = `__keyevent@${option.db}__:expired`;
