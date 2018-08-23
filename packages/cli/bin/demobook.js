@@ -16,9 +16,10 @@ const cli = meow(
 
   Options
      --repo,      -r  the repository name
-     --owner,     -o  the owner name(or the organization name)
+     --owner,     -o  the owner name (or the organization name)
      --target,    -t  Specify the destination URL
-     --directory, -d  published directory(default: dist)
+     --directory, -d  published directory (default: dist)
+     --name,      -n  Specify the project name (default: main)
      --pr             Specify an issue number if you post a URL
                       as a comment on github's PR
 `,
@@ -43,6 +44,11 @@ const cli = meow(
       },
       pr: {
         type: 'number'
+      },
+      name: {
+        type: 'string',
+        alias: 'n',
+        default: 'main'
       }
     }
   }

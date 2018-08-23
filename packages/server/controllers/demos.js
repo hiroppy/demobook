@@ -2,15 +2,20 @@
 
 const { createDir, moveFiles } = require('../deploy');
 const { getComments, postCommentToPR, editComment } = require('../bot');
+const generateOutput = require('../output');
 
 async function post(req, res) {
   try {
     const { owner, repo } = req.params;
     const dir = await createDir(req.params);
 
-    let prNum, files;
+    let projectName,
+      prNum,
+      files,
+      totalSize = 0;
 
     if (typeof req.body['file_path'] === 'string') {
+      projectName = req.body['name'] || 'main';
       prNum = req.body['pr_num'] ? Number(req.body['pr_num']) : null;
       files = [
         {
@@ -18,13 +23,19 @@ async function post(req, res) {
           buffer: req.files[0].buffer
         }
       ];
+
+      totalSize = req.files[0].buffer.byteLength;
     } else {
+      projectName =
+        req.body['name'] && Array.isArray(req.body['name']) ? req.body['name'][0] : 'main';
       prNum =
         req.body['pr_num'] && Array.isArray(req.body['pr_num'])
           ? Number(req.body['pr_num'][0])
           : null;
       files = req.body['file_path'].map((name, i) => {
         const info = req.files[i];
+
+        totalSize += info.buffer.byteLength;
 
         return {
           name: name,
@@ -37,6 +48,13 @@ async function post(req, res) {
 
     const url = `${process.env.URL}/${dir}`.replace('dist', 'demos');
 
+    const item = {
+      projectName,
+      url,
+      date: new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }),
+      totalSize
+    };
+
     if (prNum) {
       const comments = await getComments({ owner, repo, number: prNum });
 
@@ -44,18 +62,11 @@ async function post(req, res) {
         if (comment.user.login === process.env.GITHUB_USER_NAME) return true;
       });
 
+      const body = generateOutput(item, existedComment ? existedComment.body : null);
+
       if (existedComment) {
-        const body = `
-Deployed to ${url}
-
-## Logs
-${existedComment.body}
-      `;
-
         await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
       } else {
-        const body = `Deployed to ${url}`;
-
         await postCommentToPR({ owner, repo, number: prNum, body });
       }
     }
