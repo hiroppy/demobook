@@ -30,7 +30,7 @@ os:
   - linux
 before_script:
   - npm i
-  - npx @demobook/cli -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output
+  - npx @demobook/cli -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output --pr ${TRAVIS_PULL_REQUEST}
 ```
 
 After that, it is uploading a static file to Heroku.
