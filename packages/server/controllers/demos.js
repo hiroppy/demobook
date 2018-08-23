@@ -15,7 +15,7 @@ async function post(req, res) {
       files = [
         {
           name: req.body['file_path'],
-          buffer: req.files.buffer
+          buffer: req.files[0].buffer
         }
       ];
     } else {
@@ -23,7 +23,7 @@ async function post(req, res) {
         req.body['pr_num'] && Array.isArray(req.body['pr_num'])
           ? Number(req.body['pr_num'][0])
           : null;
-      const files = req.body['file_path'].map((name, i) => {
+      files = req.body['file_path'].map((name, i) => {
         const info = req.files[i];
 
         return {
