@@ -11,4 +11,4 @@ before_script:
   - npm i
   - cd examples
   - node ../packages/cli/bin/demobook -o hiroppy -r demobook -t https://demobook-ci.herokuapp.com -d output
-script: ./configure && make
+script: echo hi

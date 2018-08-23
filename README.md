@@ -1,5 +1,7 @@
 # DemoBook
 
+[![Travis (.org)](https://img.shields.io/travis/hiroppy/demobbok.svg?style=flat-square)](https://travis-ci.org/hiroppy/demobook)
+
 DemoBook will automatically deploy static files to your hosted server and generate appropriate URLs.  
 For example, it is possible to support a review of PR by making CI execute CLI.  
 Also, the bot can also post the URL as a comment from a server.
@@ -7,6 +9,7 @@ Also, the bot can also post the URL as a comment from a server.
 ## Packages
 
 - cli
+  - `npm i @demobook/cli`
 - server
 
 ## Sample
