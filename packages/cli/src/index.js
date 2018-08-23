@@ -42,6 +42,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr }) {
       body: form
     }).then((res) => res.json());
 
+    console.log('aa', res);
     spinner.stop();
     console.log(`Deployed URL: ${res.url}`);
   } catch (e) {
