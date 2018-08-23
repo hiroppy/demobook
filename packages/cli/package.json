@@ -8,6 +8,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "hiroppy <git@hiroppy.me> (https://hiroppy.me)",
   "license": "MIT",
   "dependencies": {
@@ -16,5 +19,6 @@
     "meow": "^5.0.0",
     "node-fetch": "^2.2.0",
     "ora": "^3.0.0"
-  }
+  },
+  "gitHead": "80042ba8d52b39785f2c3223be2f84bcc5b82733"
 }
