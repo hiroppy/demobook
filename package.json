@@ -1,6 +1,9 @@
 {
   "name": "demobook",
   "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "postinstall": "lerna bootstrap",
     "fmt": "prettier --write 'packages/**/*.js'",
