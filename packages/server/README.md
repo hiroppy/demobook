@@ -3,14 +3,11 @@
 ## Setup
 
 ```sh
-$ npm i @demobook/server -D
-```
-
-## Usage
-
-```sh
-$ cp .env.sample .env
-$ npm start
+$ git clone git@github.com:hiroppy/demobook.git
+$ cd demobook/server
+$ cp .env.sample .env # and edit
+$ docker-compose up -d
+$ open https://localhost:3000
 ```
 
 ## API

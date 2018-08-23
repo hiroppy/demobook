@@ -1,8 +1,16 @@
 'use strict';
 
-const { createDir, moveFiles } = require('../deploy');
+const { createDir, moveFiles, deleteDir } = require('../deploy');
 const { getComments, postCommentToPR, editComment } = require('../bot');
 const generateOutput = require('../output');
+const Redis = require('../Redis');
+
+const redis = new Redis();
+
+redis.subscribeExpired(async (keyEvent, key) => {
+  console.log('deleted:', key);
+  await deleteDir(key);
+});
 
 async function post(req, res) {
   try {
@@ -50,10 +58,13 @@ async function post(req, res) {
 
     const item = {
       projectName,
+      dir,
       url,
       date: new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }),
       totalSize
     };
+
+    await redis.set(item);
 
     if (prNum) {
       const comments = await getComments({ owner, repo, number: prNum });
@@ -64,11 +75,11 @@ async function post(req, res) {
 
       const body = generateOutput(item, existedComment ? existedComment.body : null);
 
-      if (existedComment) {
-        await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
-      } else {
-        await postCommentToPR({ owner, repo, number: prNum, body });
-      }
+      // if (existedComment) {
+      //   await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
+      // } else {
+      //   await postCommentToPR({ owner, repo, number: prNum, body });
+      // }
     }
 
     return res.json({ url });

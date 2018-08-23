@@ -4,8 +4,10 @@ const { writeFile } = require('fs');
 const { promisify } = require('util');
 const { join, dirname } = require('path');
 const { randomBytes } = require('crypto');
+const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 
+const rimrafAsync = promisify(rimraf);
 const writeFileAsync = promisify(writeFile);
 const randomBytesAsync = promisify(randomBytes);
 
@@ -17,6 +19,14 @@ async function createDir({ owner, repo }) {
     mkdirp.sync(dir);
 
     return dir;
+  } catch (e) {
+    throw e;
+  }
+}
+
+async function deleteDir(p) {
+  try {
+    await rimrafAsync(join(process.cwd(), p));
   } catch (e) {
     throw e;
   }
@@ -39,5 +49,6 @@ async function moveFiles(files, to) {
 
 module.exports = {
   createDir,
+  deleteDir,
   moveFiles
 };
