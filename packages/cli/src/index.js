@@ -7,6 +7,9 @@ const glob = require('glob');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 
+// for self signed certificate
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 function globAsync(p) {
   return new Promise((resolve, reject) => {
     glob(p, {}, (err, files) => {
@@ -16,7 +19,7 @@ function globAsync(p) {
   });
 }
 
-async function postDirectory({ target, directory = 'dist', owner, repo, pr }) {
+async function postDirectory({ target, directory = 'dist', owner, repo, pr, name }) {
   if (target === undefined || owner === undefined || repo === undefined) throw new Error();
 
   const url = `${target}/api`;
@@ -32,6 +35,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr }) {
       if (statSync(item).isDirectory()) continue;
 
       if (pr) form.append('pr_num', pr);
+      if (name) form.append('name', name);
       form.append('file_path', relative(join(process.cwd(), directory), item));
       form.append('file', createReadStream(item));
     }
