@@ -29,7 +29,27 @@ async function postCommentToPR({ owner, repo, number, body }) {
   });
 }
 
+async function getComments({ owner, repo, number }) {
+  return await bot.issues.getComments({
+    owner,
+    repo,
+    number
+  });
+}
+
+async function editComment({ owner, repo, number, body, id }) {
+  return await bot.issues.editComment({
+    owner,
+    repo,
+    number,
+    body,
+    id
+  });
+}
+
 module.exports = {
   setup,
+  getComments,
+  editComment,
   postCommentToPR
 };

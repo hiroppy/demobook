@@ -1,7 +1,7 @@
 'use strict';
 
 const { createDir, moveFiles } = require('../deploy');
-const { postCommentToPR } = require('../bot');
+const { getComments, postCommentToPR, editComment } = require('../bot');
 
 async function post(req, res) {
   try {
@@ -38,9 +38,26 @@ async function post(req, res) {
     const url = `${process.env.URL}/${dir}`.replace('dist', 'demos');
 
     if (prNum) {
-      const body = `Deployed to ${url}`;
+      const comments = await getComments({ owner, repo, number: prNum });
 
-      await postCommentToPR({ owner, repo, number: prNum, body });
+      const existedComment = comments.data.find((comment) => {
+        if (comment.user.login === process.env.GITHUB_USER_NAME) return true;
+      });
+
+      if (existedComment) {
+        const body = `
+Deployed to ${url}
+
+## Logs
+${existedComment.body}
+      `;
+
+        await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
+      } else {
+        const body = `Deployed to ${url}`;
+
+        await postCommentToPR({ owner, repo, number: prNum, body });
+      }
     }
 
     return res.json({ url });
