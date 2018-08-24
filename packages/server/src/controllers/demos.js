@@ -20,10 +20,8 @@ async function getAll(req, res) {
     const r = await redis.get(item);
     const [output, owner, repo, hash] = item.split('/');
 
-    if (!schema[owner]) {
-      schema[owner] = {};
-      schema[owner][repo] = {};
-    }
+    if (!schema[owner]) schema[owner] = {};
+    if (!schema[owner][repo]) schema[owner][repo] = {};
 
     schema[owner][repo][hash] = r;
   }
