@@ -74,6 +74,7 @@ async function post(req, res) {
     const url = `${process.env.URL}/${dir}`.replace('dist', 'demos');
 
     const item = {
+      prNum,
       projectName,
       dir,
       url,
@@ -86,6 +87,7 @@ async function post(req, res) {
     if (prNum) {
       const comments = await getComments({ owner, repo, number: prNum });
 
+      // if bot exists, overwrite the comment
       const existedComment = comments.data.find((comment) => {
         if (comment.user.login === process.env.GITHUB_USER_NAME) return true;
       });

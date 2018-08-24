@@ -43,7 +43,7 @@ const cli = meow(
         default: 'dist'
       },
       pr: {
-        type: 'number'
+        type: 'string'
       },
       name: {
         type: 'string',
