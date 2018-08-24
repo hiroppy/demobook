@@ -1,8 +1,7 @@
-'use strict';
-
-const { parse } = require('url');
-const { promisify } = require('util');
-const { createClient } = require('redis');
+import { parse } from 'url';
+import { promisify } from 'util';
+import { createClient, RedisClient } from 'redis';
+import { Item } from './controllers/demos';
 
 const { hostname, port } = process.env.REDIS_URL
   ? parse(process.env.REDIS_URL)
@@ -13,12 +12,17 @@ const { hostname, port } = process.env.REDIS_URL
 
 const option = {
   host: hostname,
-  port,
+  port: Number(port),
   db: 0
 };
 const expiredSubKey = `__keyevent@${option.db}__:expired`;
 
-class Redis {
+export class Redis {
+  subscriber: RedisClient;
+  publisher: RedisClient;
+  getAsync: (key: string) => Promise<any>; // TODO: fix
+  getKeysAsync: (condition: string) => Promise<any>;
+
   constructor() {
     this.subscriber = createClient(option);
     this.publisher = createClient(option);
@@ -28,30 +32,28 @@ class Redis {
     });
 
     this.getAsync = promisify(this.publisher.get).bind(this.publisher);
-    this.getKeys = promisify(this.publisher.keys).bind(this.publisher);
+    this.getKeysAsync = promisify(this.publisher.keys).bind(this.publisher);
 
     // delete all data
     // this.publisher.flushall('ASYNC', () => {});
   }
 
-  subscribeExpired(cb) {
+  subscribeExpired(cb: (keyEvent: string, key: string) => {}) {
     this.subscriber.subscribe(expiredSubKey);
     this.subscriber.on('message', cb);
   }
 
-  async get(key) {
+  async get(key: string) {
     return JSON.parse(await this.getAsync(key));
   }
 
-  async getKeys(key) {
-    return await this.getKeys(key);
+  async getKeys(key: string) {
+    return await this.getKeysAsync(key);
   }
 
-  async set(item) {
+  async set(item: Item) {
     const { dir, ...rest } = item;
 
-    this.publisher.set(dir, JSON.stringify(rest), 'Ex', process.env.REDIS_EXPIRED_TIME);
+    this.publisher.set(dir, JSON.stringify(rest), 'Ex', Number(process.env.REDIS_EXPIRED_TIME));
   }
 }
-
-module.exports = Redis;
