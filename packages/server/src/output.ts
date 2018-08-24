@@ -1,5 +1,3 @@
-'use strict';
-
 /*
 ## Current
 | title | title| title |
@@ -16,7 +14,8 @@
 | main | date| size|
 */
 
-const prettyBytes = require('pretty-bytes');
+import * as prettyBytes from 'pretty-bytes';
+import { Item } from './controllers/demos';
 
 const separator = '---';
 
@@ -25,17 +24,22 @@ function tableHeader() {
 | -- | -- | -- |`.trim();
 }
 
-function tableRow({ projectName, url, date, totalSize }) {
+function tableRow({
+  projectName,
+  url,
+  date,
+  totalSize
+}: Pick<Item, 'projectName' | 'url' | 'date' | 'totalSize'>) {
   return `|  [${projectName}](${url})  |  ${date} | ${prettyBytes(totalSize)} |`.trim();
 }
 
-function createSection(title, body) {
+function createSection(title: string, body: string) {
   return `## ${title}
 ${tableHeader()}
 ${body.trim()}`.trim();
 }
 
-function replaceFromSection(item, table) {
+function replaceFromSection(item: Item, table: string) {
   const arr = table.split('\n');
   let oldRow = '';
   let newTable = '';
@@ -63,7 +67,7 @@ function replaceFromSection(item, table) {
   };
 }
 
-function insertRowToTable(row, table) {
+function insertRowToTable(row: string, table: string) {
   const [title, header, separator, ...rest] = table.trim().split('\n');
   const body = [row, ...rest];
   const newTable = [title, header, separator, ...body].join('\n');
@@ -71,7 +75,7 @@ function insertRowToTable(row, table) {
   return newTable;
 }
 
-function hasItemInTable(item, table) {
+function hasItemInTable(item: Item, table: string) {
   const arr = table.split('\n');
 
   return arr.some((c) => c.includes(`[${item.projectName}]`));
@@ -82,10 +86,10 @@ function getInfo() {
 
 Hosting Server: ${process.env.URL}
 
-<sub><sup>Supported by <a href="https://github.com/hiroppy/demobook">demobook</a>.</sup></sub>`;
+<sub>Supported by <a href="https://github.com/hiroppy/demobook">demobook</a>.</sub>`;
 }
 
-function generateOutput(item, beforeBody) {
+export function generateOutput(item: Item, beforeBody: string | null) {
   if (!beforeBody) {
     // create body
     const body = tableRow(item);
@@ -132,5 +136,3 @@ ${separator}
 
 ${getInfo()}`;
 }
-
-module.exports = generateOutput;

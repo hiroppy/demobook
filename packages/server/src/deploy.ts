@@ -1,20 +1,19 @@
-'use strict';
-
-const { writeFile } = require('fs');
-const { promisify } = require('util');
-const { join, dirname } = require('path');
-const { randomBytes } = require('crypto');
-const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
+import { writeFile } from 'fs';
+import { promisify } from 'util';
+import { join, dirname } from 'path';
+import { randomBytes } from 'crypto';
+import * as rimraf from 'rimraf';
+import * as mkdirp from 'mkdirp';
+import { Option } from './bot';
 
 const rimrafAsync = promisify(rimraf);
 const writeFileAsync = promisify(writeFile);
 const randomBytesAsync = promisify(randomBytes);
 
-async function createDir({ owner, repo }) {
+export async function createDir({ owner, repo }: Option) {
   try {
     const id = (await randomBytesAsync(16)).toString('hex');
-    const dir = join(process.env.OUTPUT_DIR, owner, repo, id);
+    const dir = join(process.env.OUTPUT_DIR || '', owner, repo, id);
 
     mkdirp.sync(dir);
 
@@ -24,7 +23,7 @@ async function createDir({ owner, repo }) {
   }
 }
 
-async function deleteDir(p) {
+export async function deleteDir(p: string) {
   try {
     await rimrafAsync(join(process.cwd(), p));
   } catch (e) {
@@ -32,13 +31,13 @@ async function deleteDir(p) {
   }
 }
 
-async function moveFiles(files, to) {
+export async function moveFiles(files: any, to: string) {
   try {
     for (const { name, buffer } of files) {
       const p = `${to}/${name}`;
       const dir = dirname(p);
 
-      mkdirp(dir);
+      mkdirp(dir, () => {});
 
       await writeFileAsync(p, buffer);
     }
@@ -46,9 +45,3 @@ async function moveFiles(files, to) {
     throw e;
   }
 }
-
-module.exports = {
-  createDir,
-  deleteDir,
-  moveFiles
-};

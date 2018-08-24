@@ -1,11 +1,11 @@
 'use strict';
 
-const { readFileSync } = require('fs');
-const express = require('express');
-const bodyParser = require('body-parser');
-const { config } = require('dotenv');
-const router = require('./router');
-const { setup: setupBot } = require('./bot');
+import { readFileSync } from 'fs';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import { config } from 'dotenv';
+import { router } from './router';
+import { setup as setupBot } from './bot';
 
 config();
 
@@ -38,7 +38,7 @@ server.on('listening', () => {
   console.log(`Listening on ${bind}`);
 });
 
-server.on('error', (err) => {
+server.on('error', (err: NodeJS.ErrnoException) => {
   if (err.syscall !== 'listen') throw err;
 
   const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;

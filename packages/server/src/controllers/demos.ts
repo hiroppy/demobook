@@ -1,9 +1,19 @@
-'use strict';
+import { Request, Response } from 'express';
+import { GetCommentsForRepoResponseItem } from '@octokit/rest';
+import { createDir, moveFiles, deleteDir } from '../deploy';
+import { getComments, postCommentToPR, editComment } from '../bot';
+import { generateOutput } from '../output';
+import { Redis } from '../Redis';
 
-const { createDir, moveFiles, deleteDir } = require('../deploy');
-const { getComments, postCommentToPR, editComment } = require('../bot');
-const generateOutput = require('../output');
-const Redis = require('../Redis');
+export interface Item {
+  dir: string;
+  url: string;
+  prNum: number | null;
+  projectName: string;
+  date: string;
+  dateNum: number;
+  totalSize: number;
+}
 
 const redis = new Redis();
 
@@ -12,7 +22,7 @@ redis.subscribeExpired(async (keyEvent, key) => {
   await deleteDir(key);
 });
 
-async function getAll(req, res) {
+export async function getAll(req: Request, res: Response) {
   const keys = await redis.getKeys('*');
   const schema = {};
 
@@ -21,15 +31,28 @@ async function getAll(req, res) {
     const [output, owner, repo, hash] = item.split('/');
 
     if (!schema[owner]) schema[owner] = {};
-    if (!schema[owner][repo]) schema[owner][repo] = {};
+    if (!schema[owner][repo]) schema[owner][repo] = [];
 
-    schema[owner][repo][hash] = r;
+    schema[owner][repo].push({
+      key: hash,
+      ...r
+    });
   }
 
   return res.json(schema);
 }
 
-async function post(req, res) {
+interface PostDemos extends Request {
+  body: {
+    file_path: Array<{
+      name: string;
+    }>;
+    name: string;
+    pr_num: string;
+  };
+}
+
+export async function post(req: PostDemos, res: Response) {
   try {
     const { owner, repo } = req.params;
     const dir = await createDir(req.params);
@@ -72,13 +95,13 @@ async function post(req, res) {
     await moveFiles(files, dir);
 
     const url = `${process.env.URL}/${dir}`.replace('dist', 'demos');
-
     const item = {
-      prNum,
-      projectName,
       dir,
       url,
+      prNum,
+      projectName,
       date: new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }),
+      dateNum: Date.now(),
       totalSize
     };
 
@@ -88,14 +111,16 @@ async function post(req, res) {
       const comments = await getComments({ owner, repo, number: prNum });
 
       // if bot exists, overwrite the comment
-      const existedComment = comments.data.find((comment) => {
+      // const existedComment = comments.data.find((comment: GetCommentsForRepoResponseItem) => {
+      const existedComment = comments.data.find((comment: any) => {
         if (comment.user.login === process.env.GITHUB_USER_NAME) return true;
+        return false;
       });
 
       const body = generateOutput(item, existedComment ? existedComment.body : null);
 
       if (existedComment) {
-        await editComment({ owner, repo, number: prNum, body, id: existedComment.id });
+        await editComment({ owner, repo, body, id: String(existedComment.id) });
       } else {
         await postCommentToPR({ owner, repo, number: prNum, body });
       }
@@ -107,8 +132,3 @@ async function post(req, res) {
     return res.status(500).json({ message: e.message });
   }
 }
-
-module.exports = {
-  getAll,
-  post
-};
