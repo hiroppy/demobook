@@ -16,15 +16,17 @@
 | main | date| size|
 */
 
+const prettyBytes = require('pretty-bytes');
+
 const separator = '---';
 
 function tableHeader() {
-  return `|  Project Name  | Published Time | Total Size (byte) |
+  return `|  Project Name  | Published Time | Total Size |
 | -- | -- | -- |`.trim();
 }
 
 function tableRow({ projectName, url, date, totalSize }) {
-  return `|  [${projectName}](${url})  |  ${date} | ${totalSize} |`.trim();
+  return `|  [${projectName}](${url})  |  ${date} | ${prettyBytes(totalSize)} |`.trim();
 }
 
 function createSection(title, body) {
