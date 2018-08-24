@@ -12,6 +12,18 @@ redis.subscribeExpired(async (keyEvent, key) => {
   await deleteDir(key);
 });
 
+async function getAll(req, res) {
+  const keys = await redis.getKeys('*');
+  const schema = {};
+
+  for (const item of keys) {
+    const r = await redis.get(item);
+
+    schema[item] = r;
+  }
+  return res.json(schema);
+}
+
 async function post(req, res) {
   try {
     const { owner, repo } = req.params;
@@ -90,5 +102,6 @@ async function post(req, res) {
 }
 
 module.exports = {
+  getAll,
   post
 };

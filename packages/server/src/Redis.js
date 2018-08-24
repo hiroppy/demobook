@@ -28,6 +28,7 @@ class Redis {
     });
 
     this.getAsync = promisify(this.publisher.get).bind(this.publisher);
+    this.getKeys = promisify(this.publisher.keys).bind(this.publisher);
 
     // delete all data
     // this.publisher.flushall('ASYNC', () => {});
@@ -40,6 +41,10 @@ class Redis {
 
   async get(key) {
     return JSON.parse(await this.getAsync(key));
+  }
+
+  async getKeys(key) {
+    return await this.getKeys(key);
   }
 
   async set(item) {

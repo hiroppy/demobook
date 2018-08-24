@@ -10,6 +10,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 function router(app) {
   app.use('/demos', express.static('dist'));
   app.get('/api/health', health.get);
+  app.get('/api/demos', demos.getAll);
   app.post('/api/demos/:owner/:repo', upload.array('file'), demos.post);
 }
 
