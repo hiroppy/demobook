@@ -25,6 +25,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
   const url = `${target}/api`;
 
   try {
+    const current = Date.now();
     const spinner = ora(`🚗: Publishing to ${target}`).start();
     const dir = join(process.cwd(), directory, '**', '*');
     const items = await globAsync(dir);
@@ -43,11 +44,12 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
     const res = await fetch(`${url}/demos/${owner}/${repo}`, {
       method: 'POST',
       headers: form.getHeaders(),
-      body: form
+      body: form,
+      timeout: 60000 // 1min
     }).then((res) => res.json());
 
     spinner.stop();
-    console.log(`Deployed URL: ${res.url}`);
+    console.log(`🚀 [${Date.now() - current} ms]: ${res.url}`);
   } catch (e) {
     console.error(e);
   }
