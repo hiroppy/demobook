@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Header } from '../../organisms/Header';
+import { Header } from '../../../containers/Header';
 import { Sidebar } from '../../../containers/Sidebar';
 
 interface Props {

@@ -11,7 +11,7 @@ export interface Props extends RouteComponentProps<{ owner: string }> {
   load: (owner: string) => void;
   owner: GetReposResponse['owner'];
   repos: GetReposResponse['repos'];
-  isFetching: boolean;
+  isLoadCompletion: boolean;
 }
 
 const Body = styled(OwnerBody)`
@@ -28,12 +28,13 @@ export class Owner extends React.Component<Props> {
   }
 
   render() {
-    const { owner, repos, isFetching } = this.props;
+    const { owner, repos, isLoadCompletion } = this.props;
 
+    console.log(isLoadCompletion);
     return (
       <React.Fragment>
         <Head title={owner.name} />
-        {!isFetching ? (
+        {isLoadCompletion ? (
           <React.Fragment>
             <OwnerHeader {...owner} reposNum={Object.keys(repos).length} />
             <Body repos={repos} baseUrl={owner.url} />

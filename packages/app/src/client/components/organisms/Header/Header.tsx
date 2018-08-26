@@ -8,8 +8,11 @@ import { LinkWithBlank } from '../../atoms/LinkWithBlank';
 
 // type CommandModal = typeof import('../../molecules/CommandModal');
 
+export interface Props {
+  isOpenCommandModal: boolean;
+  updateStatusOfCommandModal: (isOpen: boolean) => void;
+}
 interface State {
-  isOpen: boolean;
   Modal: any;
   // Modal: CommandModal | null;
 }
@@ -37,19 +40,19 @@ const Container = styled.div`
   }
 `;
 
-export class Header extends React.PureComponent<{}, State> {
-  constructor(props: {}) {
+export class Header extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
     super(props);
 
-    this.state = { isOpen: false, Modal: null };
+    this.state = { Modal: null };
   }
 
   onRequestOpen = () => {
-    this.setState({ isOpen: true });
+    this.props.updateStatusOfCommandModal(true);
   };
 
   onRequestClose = () => {
-    this.setState({ isOpen: false });
+    this.props.updateStatusOfCommandModal(false);
   };
 
   async componentDidMount() {
@@ -62,6 +65,8 @@ export class Header extends React.PureComponent<{}, State> {
   }
 
   render() {
+    const { isOpenCommandModal } = this.props;
+
     return (
       <React.Fragment>
         <Container>
@@ -76,7 +81,7 @@ export class Header extends React.PureComponent<{}, State> {
           </LinkWithBlank>
         </Container>
         {this.state.Modal ? (
-          <this.state.Modal isOpen={this.state.isOpen} onRequestClose={this.onRequestClose} />
+          <this.state.Modal isOpen={isOpenCommandModal} onRequestClose={this.onRequestClose} />
         ) : null}
       </React.Fragment>
     );

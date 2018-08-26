@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose, Store } from 'redux';
-import createSagaMiddleware, { END, SagaMiddleware } from 'redux-saga';
+import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import { rootReducer } from '../reducers';
 import { rootSaga } from '../sagas';
 
@@ -27,9 +27,6 @@ export const configureStore = (preloadedState: Object = {}) => {
   sagaMiddleware.run(rootSaga);
 
   store.runSaga = sagaMiddleware.run;
-  store.close = () => {
-    store.dispatch(END);
-  };
 
   /* istanbul ignore next */
   if (module.hot) {

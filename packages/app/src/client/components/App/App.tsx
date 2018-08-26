@@ -7,6 +7,10 @@ injectGlobal`
     font-family: 'Muli', sans-serif;
     margin: 0;
   }
+
+  #root {
+    height: 100vh;
+  }
 `;
 
 export interface Props {
