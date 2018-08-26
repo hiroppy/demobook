@@ -55,6 +55,4 @@ export function get(req: Request, res: Response) {
 
   // kick redux-saga and styled-components
   renderToStaticMarkup(sheet.collectStyles(jsx));
-
-  store.close();
 }
