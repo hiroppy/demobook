@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  demobook:
+    environment:
+      NODE_ENV: 'production'
