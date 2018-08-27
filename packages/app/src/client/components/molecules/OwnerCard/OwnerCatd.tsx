@@ -68,7 +68,7 @@ const Info = styled.div`
 export const OwnerCard = ({ url, name, demosNum, updatedAt, totalSize }: Props) => (
   <Container>
     <div>
-      <Img src={`https://github.com/${name}.png?size=100`} />
+      <Img src={`${process.env.GITHUB_URL}/${name}.png?size=100`} />
     </div>
     <RightBox>
       <Title>
