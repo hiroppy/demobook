@@ -44,8 +44,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
     const res = await fetch(`${url}/demos/${owner}/${repo}`, {
       method: 'POST',
       headers: form.getHeaders(),
-      body: form,
-      timeout: 60000 // 1min
+      body: form
     }).then((res) => res.json());
 
     spinner.stop();
