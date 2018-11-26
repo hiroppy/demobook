@@ -37,7 +37,7 @@ export async function moveFiles(files: any, to: string) {
       const p = `${to}/${name}`;
       const dir = dirname(p);
 
-      mkdirp(dir, () => {});
+      mkdirp.sync(dir);
 
       await writeFileAsync(p, buffer);
     }

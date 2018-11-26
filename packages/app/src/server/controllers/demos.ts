@@ -17,8 +17,11 @@ export interface Item {
 const redis = new Redis();
 
 redis.subscribeExpired(async (keyEvent, key) => {
-  console.log('deleted:', key);
-  await deleteDir(key);
+  try {
+    await deleteDir(key);
+  } catch (e) {
+    throw e;
+  }
 });
 
 // TODO: use websocket
@@ -52,13 +55,14 @@ export async function getOwners(req: Request, res: Response) {
     const demo = await redis.get(item);
     const [, owner, ,] = item.split('/');
 
-    if (!schema[owner])
+    if (!schema[owner]) {
       schema[owner] = {
         url: `${process.env.GITHUB_URL}/${owner}`,
         updatedAt: -1,
         demosNum: 0,
         totalSize: 0
       };
+    }
 
     schema[owner]['demosNum']++;
     schema[owner]['totalSize'] += demo.totalSize;
@@ -218,7 +222,6 @@ export async function post(req: PostDemos, res: Response) {
 
     return res.json({ url });
   } catch (e) {
-    console.error(e);
     return res.status(500).json({ message: e.message });
   }
 }
