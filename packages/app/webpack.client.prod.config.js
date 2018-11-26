@@ -9,14 +9,11 @@ const { GenerateSW } = require('workbox-webpack-plugin');
 const config = {
   entry: resolve('src', 'client', 'index.tsx'),
   output: {
-    filename: '[name].[chunkhash].bundle.js',
-    chunkFilename: '[name].[chunkhash].[id].bundle.js'
+    filename: '[name].[contenthash].bundle.js',
+    chunkFilename: '[name].[contenthash].[id].bundle.js'
   },
   plugins: [new webpack.optimize.AggressiveMergingPlugin(), new ManifestPlugin(), new GenerateSW()],
   optimization: {
-    // runtimeChunk: {
-    //   name: "manifest",
-    // },
     minimizer: [
       new UglifyJsPlugin({
         parallel: true
@@ -27,7 +24,7 @@ const config = {
         vendor: {
           test: /node_modules/,
           name: 'vendor',
-          chunks: 'initial',
+          chunks: 'all',
           enforce: true
         }
       }
