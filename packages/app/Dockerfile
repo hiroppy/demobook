@@ -7,7 +7,5 @@ RUN npx npm install && npx npm build:client:prod
 
 ENV HOST=0.0.0.0
 
-COPY . /app
-
 ENTRYPOINT ["npx", "npm", "run"]
 CMD ["start"]
