@@ -5,7 +5,7 @@ import { runServer } from './server';
 
 config();
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.USE_CLUSTER === 'true') {
   const numCPUs = cpus().length;
 
   if (cluster.isMaster) {
