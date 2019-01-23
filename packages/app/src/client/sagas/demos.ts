@@ -14,7 +14,7 @@ if (!process.env.BROWSER) {
 }
 
 const client = axios.create({
-  baseURL: process.env.URL,
+  baseURL: process.env.BROWSER ? process.env.URL : `http://localhost:${process.env.PORT || 3000}`,
   timeout: 3000
 });
 
