@@ -13,7 +13,7 @@ export const initialState: State = {
   isLoadCompletion: false
 };
 
-export const reducer = (state: State = initialState, action: Actions & PipelinesActions): State => {
+export const reducer = (state: State = initialState, action: Actions | PipelinesActions): State => {
   switch (action.type) {
     case 'UPDATE_STATUS_OF_COMMAND_MODAL':
       return { ...state, isOpenCommandModal: action.payload.isOpen };
@@ -25,6 +25,7 @@ export const reducer = (state: State = initialState, action: Actions & Pipelines
       return { ...state, isFetching: false, isLoadCompletion: true };
     case 'RUN_TOP_PAGE_PIPELINE_FAILURE':
     case 'RUN_OWNER_PAGE_PIPELINE_FAILURE':
+      console.error(action.payload.error);
       return { ...state, isFetching: false };
     default:
       return state;

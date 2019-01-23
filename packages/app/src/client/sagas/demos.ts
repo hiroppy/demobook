@@ -24,7 +24,7 @@ function* fetchOwners() {
 
     yield put(fetchOwnersSuccess(res));
   } catch (e) {
-    yield put(fetchOwnersFailure());
+    yield put(fetchOwnersFailure(e));
   }
 }
 
@@ -35,7 +35,7 @@ function* fetchRepos(action: FetchRepos) {
 
     yield put(fetchReposSuccess(res));
   } catch (e) {
-    yield put(fetchReposFailure());
+    yield put(fetchReposFailure(e));
   }
 }
 

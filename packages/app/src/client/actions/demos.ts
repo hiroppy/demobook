@@ -33,10 +33,16 @@ export const fetchOwnersSuccess = (owners: GetOwnersResponse): FetchOwnersSucces
 
 export interface FetchOwnersFailure extends Action {
   type: 'FETCH_OWNERS_FAILURE';
+  payload: {
+    error: Error;
+  };
 }
 
-export const fetchOwnersFailure = (): FetchOwnersFailure => ({
-  type: 'FETCH_OWNERS_FAILURE'
+export const fetchOwnersFailure = (error: Error): FetchOwnersFailure => ({
+  type: 'FETCH_OWNERS_FAILURE',
+  payload: {
+    error
+  }
 });
 
 export interface FetchRepos extends Action {
@@ -74,8 +80,14 @@ export const fetchReposSuccess = ({
 
 export interface FetchReposFailure extends Action {
   type: 'FETCH_REPOS_FAILURE';
+  payload: {
+    error: Error;
+  };
 }
 
-export const fetchReposFailure = (): FetchReposFailure => ({
-  type: 'FETCH_REPOS_FAILURE'
+export const fetchReposFailure = (error: Error): FetchReposFailure => ({
+  type: 'FETCH_REPOS_FAILURE',
+  payload: {
+    error
+  }
 });

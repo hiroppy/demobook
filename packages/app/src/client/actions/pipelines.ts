@@ -25,10 +25,16 @@ export const runTopPagePipelineSuccess = (): RunTopPagePipelineSuccess => ({
 });
 export interface RunTopPagePipelineFailure extends Action {
   type: 'RUN_TOP_PAGE_PIPELINE_FAILURE';
+  payload: {
+    error: string;
+  };
 }
 
-export const runTopPagePipelineFailure = (): RunTopPagePipelineFailure => ({
-  type: 'RUN_TOP_PAGE_PIPELINE_FAILURE'
+export const runTopPagePipelineFailure = (error: string): RunTopPagePipelineFailure => ({
+  type: 'RUN_TOP_PAGE_PIPELINE_FAILURE',
+  payload: {
+    error
+  }
 });
 
 export interface RunOwnerPagePipeline extends Action {
@@ -52,10 +58,17 @@ export interface RunOwnerPagePipelineSuccess extends Action {
 export const runOwnerPagePipelineSuccess = (): RunOwnerPagePipelineSuccess => ({
   type: 'RUN_OWNER_PAGE_PIPELINE_SUCCESS'
 });
+
 export interface RunOwnerPagePipelineFailure extends Action {
   type: 'RUN_OWNER_PAGE_PIPELINE_FAILURE';
+  payload: {
+    error: string;
+  };
 }
 
-export const runOwnerPagePipelineFailure = (): RunOwnerPagePipelineFailure => ({
-  type: 'RUN_OWNER_PAGE_PIPELINE_FAILURE'
+export const runOwnerPagePipelineFailure = (error: string): RunOwnerPagePipelineFailure => ({
+  type: 'RUN_OWNER_PAGE_PIPELINE_FAILURE',
+  payload: {
+    error
+  }
 });
