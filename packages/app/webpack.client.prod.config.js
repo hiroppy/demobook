@@ -2,34 +2,35 @@
 
 const { resolve } = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 
 const config = {
   entry: resolve('src', 'client', 'index.tsx'),
   output: {
     filename: '[name].[contenthash].bundle.js',
-    chunkFilename: '[name].[contenthash].[id].bundle.js'
+    chunkFilename: '[name].[contenthash].[id].bundle.js',
   },
-  plugins: [new webpack.optimize.AggressiveMergingPlugin(), new ManifestPlugin(), new GenerateSW()],
+  plugins: [
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new WebpackManifestPlugin(),
+    new GenerateSW(),
+  ],
   optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        parallel: true
-      })
-    ],
+    minimize: true,
+    minimizer: [new TerserPlugin()],
     splitChunks: {
       cacheGroups: {
         vendor: {
           test: /node_modules/,
           name: 'vendor',
           chunks: 'all',
-          enforce: true
-        }
-      }
-    }
-  }
+          enforce: true,
+        },
+      },
+    },
+  },
 };
 
 module.exports = config;

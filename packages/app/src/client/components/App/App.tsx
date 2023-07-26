@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { injectGlobal } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import { Main } from '../templates/Main';
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Muli', sans-serif;
     margin: 0;
@@ -18,4 +18,9 @@ export interface Props {
 }
 
 // like App-Shell of PWA
-export const App = ({ children }: Props) => <Main>{children}</Main>;
+export const App = ({ children }: Props) => (
+  <>
+    <GlobalStyle />
+    <Main>{children}</Main>
+  </>
+);

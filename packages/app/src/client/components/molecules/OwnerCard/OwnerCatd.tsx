@@ -58,7 +58,7 @@ const Img = styled.img`
 const Info = styled.div`
   color: #555;
   font-size: 0.8rem;
-  margin-top 8px;
+  margin-top: 8px;
 
   & > *:not(:first-child) {
     margin-top: 4px;

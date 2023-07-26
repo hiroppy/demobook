@@ -1,4 +1,4 @@
-import * as cluster from 'cluster';
+import cluster from 'cluster';
 import { cpus } from 'os';
 import { config } from 'dotenv';
 import { runServer } from './server';
@@ -8,7 +8,7 @@ config();
 if (process.env.USE_CLUSTER === 'true') {
   const numCPUs = cpus().length;
 
-  if (cluster.isMaster) {
+  if (cluster.isPrimary) {
     [...new Array(numCPUs)].forEach(() => cluster.fork());
 
     // cluster manager

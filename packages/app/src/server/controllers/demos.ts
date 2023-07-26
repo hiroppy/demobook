@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { GetCommentsForRepoResponseItem } from '@octokit/rest';
 import { createDir, moveFiles, deleteDir } from '../deploy';
 import { getComments, postCommentToPR, editComment } from '../bot';
 import { generateOutput } from '../output';
@@ -38,7 +37,7 @@ export async function getTimeSequence(req: Request, res: Response) {
       owner,
       key: hash,
       repo,
-      url: `${process.env.URL}/demos/${owner}/${repo}/${hash}`
+      url: `${process.env.URL}/demos/${owner}/${repo}/${hash}`,
     });
   }
 
@@ -47,9 +46,17 @@ export async function getTimeSequence(req: Request, res: Response) {
   return res.json(schema);
 }
 
+type Owner = {
+  name: string;
+  url: string;
+  updatedAt: number;
+  demosNum: number;
+  totalSize: number;
+};
+
 export async function getOwners(req: Request, res: Response) {
   const keys = await redis.getKeys('*');
-  const schema = {};
+  const schema: Record<string, Omit<Owner, 'name'>> = {};
 
   for (const item of keys) {
     const demo = await redis.get(item);
@@ -60,7 +67,7 @@ export async function getOwners(req: Request, res: Response) {
         url: `${process.env.GITHUB_URL}/${owner}`,
         updatedAt: -1,
         demosNum: 0,
-        totalSize: 0
+        totalSize: 0,
       };
     }
 
@@ -73,19 +80,29 @@ export async function getOwners(req: Request, res: Response) {
   return res.json(schema);
 }
 
+type Repo = {
+  key: string;
+  prUrl: string;
+  totalSize: number;
+  dateNum: number;
+};
+
 // repo url
 export async function getRepos(req: Request, res: Response) {
   const { owner: name } = req.params;
   const keys = await redis.getKeys(`${process.env.OUTPUT_DIR}/${name}/*`);
-  const schema = {
+  const schema: {
+    owner: Owner;
+    repos: Record<string, Repo[]>;
+  } = {
     owner: {
       url: `${process.env.GITHUB_URL}/${name}`,
       name,
       demosNum: keys.length,
       totalSize: 0,
-      updatedAt: -1
+      updatedAt: -1,
     },
-    repos: {}
+    repos: {},
   };
 
   for (const item of keys) {
@@ -101,7 +118,7 @@ export async function getRepos(req: Request, res: Response) {
     schema['repos'][repo].push({
       ...demo,
       key: hash,
-      prUrl
+      prUrl,
     });
 
     schema['owner']['totalSize'] += demo.totalSize;
@@ -109,6 +126,7 @@ export async function getRepos(req: Request, res: Response) {
   }
 
   Object.entries(schema['repos']).forEach(([key, value]) => {
+    // @ts-expect-error
     schema['repos'][key] = (value as Array<Item>).sort((a, b) => b.dateNum - a.dateNum);
   });
 
@@ -119,7 +137,7 @@ export async function getDemos(req: Request, res: Response) {}
 
 export async function getAll(req: Request, res: Response) {
   const keys = await redis.getKeys('*');
-  const schema = {};
+  const schema: Record<string, Record<string, Repo[]>> = {};
 
   for (const item of keys) {
     const r = await redis.get(item);
@@ -130,7 +148,7 @@ export async function getAll(req: Request, res: Response) {
 
     schema[owner][repo].push({
       key: hash,
-      ...r
+      ...r,
     });
   }
 
@@ -150,6 +168,7 @@ interface PostDemos extends Request {
 export async function post(req: PostDemos, res: Response) {
   try {
     const { owner, repo } = req.params;
+    // @ts-expect-error
     const dir = await createDir(req.params);
 
     let projectName,
@@ -160,14 +179,16 @@ export async function post(req: PostDemos, res: Response) {
     if (typeof req.body['file_path'] === 'string') {
       projectName = req.body['name'] || 'main';
       prNum = req.body['pr_num'] ? Number(req.body['pr_num']) : null;
+      // @ts-expect-error
+      const info = req.files[0];
       files = [
         {
           name: req.body['file_path'],
-          buffer: req.files[0].buffer
-        }
+          buffer: info.buffer,
+        },
       ];
 
-      totalSize = req.files[0].buffer.byteLength;
+      totalSize = info.buffer.byteLength;
     } else {
       projectName =
         req.body['name'] && Array.isArray(req.body['name']) ? req.body['name'][0] : 'main';
@@ -176,13 +197,14 @@ export async function post(req: PostDemos, res: Response) {
           ? Number(req.body['pr_num'][0])
           : null;
       files = req.body['file_path'].map((name, i) => {
+        // @ts-expect-error
         const info = req.files[i];
 
         totalSize += info.buffer.byteLength;
 
         return {
           name: name,
-          buffer: info.buffer
+          buffer: info.buffer,
         };
       });
     }
@@ -196,7 +218,7 @@ export async function post(req: PostDemos, res: Response) {
       prNum,
       projectName,
       dateNum: Date.now(),
-      totalSize
+      totalSize,
     };
 
     await redis.set(item);
@@ -211,7 +233,7 @@ export async function post(req: PostDemos, res: Response) {
         return false;
       });
 
-      const body = generateOutput(item, existedComment ? existedComment.body : null);
+      const body = generateOutput(item, existedComment?.body ?? null);
 
       if (existedComment) {
         await editComment({ owner, repo, body, id: String(existedComment.id) });
@@ -222,6 +244,6 @@ export async function post(req: PostDemos, res: Response) {
 
     return res.json({ url });
   } catch (e) {
-    return res.status(500).json({ message: e.message });
+    return res.status(500).json({ message: (e as Error).message });
   }
 }

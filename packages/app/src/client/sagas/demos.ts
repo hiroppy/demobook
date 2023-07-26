@@ -6,7 +6,7 @@ import {
   fetchOwnersFailure,
   fetchReposSuccess,
   fetchReposFailure,
-  FetchRepos
+  FetchRepos,
 } from '../actions/demos';
 
 if (!process.env.BROWSER) {
@@ -15,27 +15,29 @@ if (!process.env.BROWSER) {
 
 const client = axios.create({
   baseURL: process.env.BROWSER ? process.env.URL : `http://localhost:${process.env.PORT || 3000}`,
-  timeout: 3000
+  timeout: 3000,
 });
 
 function* fetchOwners() {
   try {
+    // @ts-expect-error
     const res: GetOwnersResponse = (yield client('/api/demos')).data;
 
     yield put(fetchOwnersSuccess(res));
   } catch (e) {
-    yield put(fetchOwnersFailure(e));
+    yield put(fetchOwnersFailure(e as Error));
   }
 }
 
 function* fetchRepos(action: FetchRepos) {
   try {
     const { owner } = action.paylaod;
+    // @ts-expect-error
     const res: GetReposResponse = (yield client(`/api/demos/${owner}`)).data;
 
     yield put(fetchReposSuccess(res));
   } catch (e) {
-    yield put(fetchReposFailure(e));
+    yield put(fetchReposFailure(e as Error));
   }
 }
 
