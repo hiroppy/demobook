@@ -27,34 +27,34 @@ const cli = meow(
     flags: {
       repo: {
         type: 'string',
-        alias: 'r'
+        alias: 'r',
       },
       owner: {
         type: 'string',
-        alias: 'o'
+        alias: 'o',
       },
       target: {
         type: 'string',
-        alias: 't'
+        alias: 't',
       },
       directory: {
         type: 'string',
         alias: 'd',
-        default: 'dist'
+        default: 'dist',
       },
       pr: {
-        type: 'string'
+        type: 'string',
       },
       name: {
         type: 'string',
         alias: 'n',
-        default: 'main'
-      }
-    }
-  }
+        default: 'main',
+      },
+    },
+  },
 );
 
-if (cli.input.length === 0 && (!cli.flags.t || !cli.flags.r || !cli.flags.o)) {
+if (cli.input.length === 0 && (!cli.flags.target || !cli.flags.repo || !cli.flags.owner)) {
   console.error('see: demobook --help');
   process.exit(1);
 }
