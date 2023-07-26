@@ -14,11 +14,11 @@
   "author": "hiroppy <git@hiroppy.me> (https://hiroppy.me)",
   "license": "MIT",
   "dependencies": {
-    "form-data": "^2.3.2",
-    "glob": "^7.1.2",
-    "meow": "^5.0.0",
-    "node-fetch": "^2.2.0",
-    "ora": "^3.0.0"
+    "form-data": "^4.0.0",
+    "glob": "^10.3.3",
+    "meow": "^9.0.0",
+    "node-fetch": "^2.6.12",
+    "ora": "^5.4.1"
   },
   "gitHead": "80042ba8d52b39785f2c3223be2f84bcc5b82733"
 }

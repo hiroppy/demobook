@@ -3,21 +3,12 @@
 const { statSync, createReadStream } = require('fs');
 const { join, relative } = require('path');
 const ora = require('ora');
-const glob = require('glob');
+const { glob } = require('glob');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 
 // for self signed certificate
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-function globAsync(p) {
-  return new Promise((resolve, reject) => {
-    glob(p, {}, (err, files) => {
-      if (err) reject(err);
-      else resolve(files);
-    });
-  });
-}
 
 async function postDirectory({ target, directory = 'dist', owner, repo, pr, name }) {
   if (target === undefined || owner === undefined || repo === undefined) throw new Error();
@@ -28,7 +19,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
     const current = Date.now();
     const spinner = ora(`🚗: Publishing to ${target}`).start();
     const dir = join(process.cwd(), directory, '**', '*');
-    const items = await globAsync(dir);
+    const items = await glob(dir);
 
     const form = new FormData();
 
@@ -44,7 +35,7 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
     const res = await fetch(`${url}/demos/${owner}/${repo}`, {
       method: 'POST',
       headers: form.getHeaders(),
-      body: form
+      body: form,
     }).then((res) => res.json());
 
     spinner.stop();
@@ -55,5 +46,5 @@ async function postDirectory({ target, directory = 'dist', owner, repo, pr, name
 }
 
 module.exports = {
-  postDirectory
+  postDirectory,
 };
