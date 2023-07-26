@@ -6,14 +6,14 @@ import {
   FetchOwnersSuccess,
   FetchOwnersFailure,
   FetchReposSuccess,
-  FetchReposFailure
+  FetchReposFailure,
 } from '../actions/demos';
 import {
   runTopPagePipelineSuccess,
   runTopPagePipelineFailure,
   RunOwnerPagePipeline,
   runOwnerPagePipelineSuccess,
-  runOwnerPagePipelineFailure
+  runOwnerPagePipelineFailure,
 } from '../actions/pipelines';
 
 function* runTopPagePipeline() {
@@ -21,13 +21,13 @@ function* runTopPagePipeline() {
     yield put(fetchOwners());
     const res: FetchOwnersSuccess | FetchOwnersFailure = yield take([
       'FETCH_OWNERS_SUCCESS',
-      'FETCH_OWNERS_FAILURE'
+      'FETCH_OWNERS_FAILURE',
     ]);
 
     if (res.type === 'FETCH_OWNERS_FAILURE') throw new Error(res.payload.error.message);
     yield put(runTopPagePipelineSuccess());
   } catch (e) {
-    yield put(runTopPagePipelineFailure(e));
+    yield put(runTopPagePipelineFailure((e as Error).message));
   } finally {
     if (!process.env.BROWSER) yield put(END);
   }
@@ -38,13 +38,13 @@ function* runOwnerPagePipeline(action: RunOwnerPagePipeline) {
     yield put(fetchRepos(action.payload.owner));
     const res: FetchReposSuccess | FetchReposFailure = yield take([
       'FETCH_REPOS_SUCCESS',
-      'FETCH_REPOS_FAILUER'
+      'FETCH_REPOS_FAILUER',
     ]);
 
     if (res.type === 'FETCH_REPOS_FAILURE') throw new Error(res.payload.error.message);
     yield put(runOwnerPagePipelineSuccess());
   } catch (e) {
-    yield put(runOwnerPagePipelineFailure(e));
+    yield put(runOwnerPagePipelineFailure((e as Error).message));
   } finally {
     if (!process.env.BROWSER) yield put(END);
   }

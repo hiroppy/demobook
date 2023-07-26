@@ -5,7 +5,7 @@ const webpack = require('webpack');
 
 const config = {
   entry: ['webpack-hot-middleware/client', resolve('src', 'client', 'index.tsx')],
-  plugins: [new webpack.HotModuleReplacementPlugin()]
+  plugins: [new webpack.HotModuleReplacementPlugin()],
 };
 
 module.exports = config;

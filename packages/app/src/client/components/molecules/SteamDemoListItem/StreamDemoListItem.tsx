@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import * as prettyBytes from 'pretty-bytes';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
 import { MdStorage } from 'react-icons/md';
 import { MdTimer } from 'react-icons/md';
 import { LabelWithIcon } from '../../atoms/Label';
@@ -53,7 +53,7 @@ export const StreamDemoListItem = ({
   owner,
   repo,
   dateNum,
-  totalSize
+  totalSize,
 }: GetSequence[0]) => (
   <Container url={url}>
     <Title>
