@@ -40,7 +40,7 @@
     "serve-favicon": "^2.5.0",
     "styled-components": "^6.0.5"
   },
-  "gitHead": "80042ba8d52b39785f2c3223be2f84bcc5b82733",
+  "gitHead": "d7937bc051e25a7610e13f4767e42686e71e77af",
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
     "@types/dotenv": "^6.1.1",
